@@ -57,10 +57,10 @@ end
 function get_electric_field_from_potential(ep::ElectricPotential{T, 3, :cylindrical}, pointtypes::PointTypes{T}, fieldvector_coordinates=:xyz)::ElectricField{T, 3, :cylindrical} where {T <: SSDFloat}
     p = ep.data
     axr::Vector{T} = collect(ep.grid[:r])
-    axφ::Vector{T} = collect(ep.grid[:φ])
-    axz::Vector{T} = collect(ep.grid[:z])
+    axφ::Vector{T} = collect(ep.grid.φ)
+    axz::Vector{T} = collect(ep.grid.z)
 
-    cyclic::T = ep.grid[:φ].interval.right
+    cyclic::T = ep.grid.φ.interval.right
     ef = Array{SVector{3, T}}(undef, size(p)...)
     for iz in 1:size(ef, 3)
         for iφ in 1:size(ef, 2)
@@ -242,12 +242,12 @@ end
 include("plot_recipes.jl")
 
 function get_electric_field_from_potential(ep::ElectricPotential{T, 3, :cartesian}, pointtypes::PointTypes{T})::ElectricField{T, 3, :cartesian} where {T <: SSDFloat}
-    axx::Vector{T} = collect(ep.grid[:x])
-    axy::Vector{T} = collect(ep.grid[:y])
-    axz::Vector{T} = collect(ep.grid[:z])
-    axx_ext::Vector{T} = get_extended_ticks(ep.grid[:x])
-    axy_ext::Vector{T} = get_extended_ticks(ep.grid[:y])
-    axz_ext::Vector{T} = get_extended_ticks(ep.grid[:z])
+    axx::Vector{T} = collect(ep.grid.x)
+    axy::Vector{T} = collect(ep.grid.y)
+    axz::Vector{T} = collect(ep.grid.z)
+    axx_ext::Vector{T} = get_extended_ticks(ep.grid.x)
+    axy_ext::Vector{T} = get_extended_ticks(ep.grid.y)
+    axz_ext::Vector{T} = get_extended_ticks(ep.grid.z)
 
     ef::Array{SVector{3, T}} = Array{SVector{3, T}}(undef, size(ep.data))
 

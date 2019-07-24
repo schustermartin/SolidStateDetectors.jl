@@ -26,10 +26,10 @@ function SolidStateDetector{T, S}()::SolidStateDetector{T} where {T <: SSDFloat,
     world = World(Val(S), world_limits)
 
     return SolidStateDetector{T, S}(
-        "EmptyDetector", 
+        "EmptyDetector",
         default_unit_dict(),
         world,
-        Dict(), 
+        Dict(),
         material_properties[materials["vacuum"]],
         semiconductors,
         contacts,
@@ -41,15 +41,15 @@ function SolidStateDetector{T}()::SolidStateDetector{T} where {T <: SSDFloat}
     S::Symbol = :cartesian
     return SolidStateDetector{T, S}()
 end
-function SolidStateDetector()::SolidStateDetector{Float32, :cartesian} 
+function SolidStateDetector()::SolidStateDetector{Float32, :cartesian}
     return SolidStateDetector{Float32, :cartesian}()
 end
 
 function default_unit_dict()::Dict{String, Unitful.Units}
-    return Dict{String, Unitful.Units}(  
+    return Dict{String, Unitful.Units}(
         "length" => u"m", # change this to u"m" ? SI Units
-        "potential" => u"V", 
-        "angle" => u"°", 
+        "potential" => u"V",
+        "angle" => u"°",
         "temperature" => u"K"
     )
 end
@@ -170,10 +170,10 @@ function SolidStateDetector{T}(config_file::Dict)::SolidStateDetector{T} where{T
     grid_type::Symbol = :cartesian
     semiconductors::Vector{Semiconductor{T}}, contacts::Vector{Contact{T}}, passives::Vector{Passive{T}} = [], [], []
     medium::NamedTuple = material_properties[materials["vacuum"]]
-    inputunits = dunits::Dict{String, Unitful.Units} = Dict{String, Unitful.Units}(  
+    inputunits = dunits::Dict{String, Unitful.Units} = Dict{String, Unitful.Units}(
         "length" => u"m", # change this to u"m" ? SI Units
-        "potential" => u"V", 
-        "angle" => u"°", 
+        "potential" => u"V",
+        "angle" => u"°",
         "temperature" => u"K"
     )
     inputunits = construct_units(config_file)
@@ -338,23 +338,23 @@ function paint_object(det::SolidStateDetector{T}, object::AbstractObject, grid::
 end
 
 
-function paint_object(det::SolidStateDetector{T}, object::AbstractObject{T}, grid::CylindricalGrid{T}, ::Val{:φ}, φ::T )  where {T <: SSDFloat}
-    closest_φ_idx=searchsortednearest(grid[:φ].ticks, φ)
-    stepsize::Vector{T}= [minimum(diff(grid[:r].ticks)), IntervalSets.width(grid[:φ].interval) == 0.0 ? 0.05236 : minimum(diff(grid[:φ].ticks)), minimum(diff(grid[:z].ticks))]
-    stepsize /= 2
-    samples = filter(x-> x in object.geometry, vcat([sample(g, stepsize) for g in object.geometry_positive]...))
-    object_gridpoints = unique!([find_closest_gridpoint(sample_point,grid) for sample_point in samples])
-    return filter(x -> x[2]==closest_φ_idx, object_gridpoints)
-end
-function paint_object(det::SolidStateDetector{T}, object::AbstractObject{T}, grid::CylindricalGrid{T}, ::Val{:r}, r::T )  where {T <: SSDFloat}
-    return CartesianPoint{T}[]
-end
-function paint_object(det::SolidStateDetector{T}, object::AbstractObject{T}, grid::Grid{T}, ::Val{:z}, z::T )  where {T <: SSDFloat}
-    return CartesianPoint{T}[]
-end
-function paint_object(det::SolidStateDetector{T}, object::AbstractObject{T}, grid::CartesianGrid{T}, ::Val{:x}, x::T )  where {T <: SSDFloat}
-    return CartesianPoint{T}[]
-end
-function paint_object(det::SolidStateDetector{T}, object::AbstractObject{T}, grid::CartesianGrid{T}, ::Val{:y}, y::T )  where {T <: SSDFloat}
-    return CartesianPoint{T}[]
-end
+# function paint_object(det::SolidStateDetector{T}, object::AbstractObject{T}, grid::CylindricalGrid{T}, ::Val{:φ}, φ::T )  where {T <: SSDFloat}
+#     closest_φ_idx=searchsortednearest(grid.φ.ticks, φ)
+#     stepsize::Vector{T}= [minimum(diff(grid[:r].ticks)), IntervalSets.width(grid.φ.interval) == 0.0 ? 0.05236 : minimum(diff(grid.φ.ticks)), minimum(diff(grid.z.ticks))]
+#     stepsize /= 2
+#     samples = filter(x-> x in object.geometry, vcat([sample(g, stepsize) for g in object.geometry_positive]...))
+#     object_gridpoints = unique!([find_closest_gridpoint(sample_point,grid) for sample_point in samples])
+#     return filter(x -> x[2]==closest_φ_idx, object_gridpoints)
+# end
+# function paint_object(det::SolidStateDetector{T}, object::AbstractObject{T}, grid::CylindricalGrid{T}, ::Val{:r}, r::T )  where {T <: SSDFloat}
+#     return CartesianPoint{T}[]
+# end
+# function paint_object(det::SolidStateDetector{T}, object::AbstractObject{T}, grid::Grid{T}, ::Val{:z}, z::T )  where {T <: SSDFloat}
+#     return CartesianPoint{T}[]
+# end
+# function paint_object(det::SolidStateDetector{T}, object::AbstractObject{T}, grid::CartesianGrid{T}, ::Val{:x}, x::T )  where {T <: SSDFloat}
+#     return CartesianPoint{T}[]
+# end
+# function paint_object(det::SolidStateDetector{T}, object::AbstractObject{T}, grid::CartesianGrid{T}, ::Val{:y}, y::T )  where {T <: SSDFloat}
+#     return CartesianPoint{T}[]
+# end

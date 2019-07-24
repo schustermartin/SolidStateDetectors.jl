@@ -32,35 +32,35 @@ end
                 subplot := 1
                 title := "r_component"
                 ylabel --> "z ["*units[SI_factor]*"]"
-                grid[:r] ./ SI_factor, grid[:z] ./ SI_factor, vectorfield_r[:,i_fixed,:]'
+                grid[:r] ./ SI_factor, grid.z ./ SI_factor, vectorfield_r[:,i_fixed,:]'
             end
             @series begin
                 subplot := 2
                 colorbar_title --> "Field Strength [V / "*units[SI_factor]*"]"
                 title := "φ_component"
 
-                grid[:r] ./SI_factor, grid[:z] ./SI_factor, vectorfield_φ[:,i_fixed,:]'
+                grid[:r] ./SI_factor, grid.z ./SI_factor, vectorfield_φ[:,i_fixed,:]'
             end
             @series begin
                 subplot := 3
                 title := "z_component"
                 ylabel --> "z ["*units[SI_factor]*"]"
                 xlabel --> "r ["*units[SI_factor]*"]"
-                grid[:r] ./SI_factor, grid[:z] ./SI_factor, vectorfield_z[:,i_fixed,:]'
+                grid[:r] ./SI_factor, grid.z ./SI_factor, vectorfield_z[:,i_fixed,:]'
             end
             @series begin
                 subplot := 4
                 colorbar_title --> "Field Strength [V / "*units[SI_factor]*"]"
                 xlabel --> "r ["*units[SI_factor]*"]"
                 title:= "magnitude"
-                grid[:r] ./SI_factor, grid[:z] ./SI_factor, vectorfield_magn[:,i_fixed,:]'
+                grid[:r] ./SI_factor, grid.z ./SI_factor, vectorfield_magn[:,i_fixed,:]'
             end
         end
     elseif view == :ef
         if plane == :rφ
             vectorfield_xyz = Array{Vector{Float32}}(undef,size(vectorfield,1),size(vectorfield,2),size(vectorfield,3));
-            for (iz,z) in enumerate(grid[:z])
-                for (iφ,φ) in enumerate(grid[:φ])
+            for (iz,z) in enumerate(grid.z)
+                for (iφ,φ) in enumerate(grid.φ)
                     for (ir,r) in enumerate(grid[:r])
                         vectorfield_xyz[ir,iφ,iz]=get_xyz_vector_from_rφz_field_vector_at_rφz(vectorfield,r,φ,z,ir,iφ,iz)
                     end
@@ -78,7 +78,7 @@ end
         label := ""
         ylabel := "y "
         xlabel := "x "
-        title := "z = $(round(grid[:z][i_fixed]/SI_factor,digits=2)) / mm"
+        title := "z = $(round(grid.z[i_fixed]/SI_factor,digits=2)) / mm"
         xlims := (-1.2/SI_factor*maximum(grid[:r]),1.2/SI_factor*maximum(grid[:r]))
         ylims := (-1.2/SI_factor*maximum(grid[:r]),1.2/SI_factor*maximum(grid[:r]))
         for (ir,r) in enumerate(grid[:r][1:spacing:end])

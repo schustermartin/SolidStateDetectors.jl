@@ -21,16 +21,23 @@ first type argument:  type of the orgal point (for even points -> `Val{true}()`,
 second type argument: is sum of other point indices even or odd -> (if sum is even -> `Val{true}()`, else `Val{false}()`)
 """
 @inline function nidx( rbidx::Int, ::Val{true}, ::Val{true})::Int
-   return (rbidx - 1) * 2 
+   return (rbidx - 1) * 2
 end
 @inline function nidx( rbidx::Int, ::Val{true}, ::Val{false})::Int
    return (rbidx - 1) * 2 - 1
 end
+@inline function nidx( rbidx::Int, ::Val{true}, b::Bool)::Int
+    return ifelse(b, (rbidx - 1) * 2, (rbidx - 1) * 2 - 1)
+end
+
 @inline function nidx( rbidx::Int, ::Val{false}, ::Val{true})::Int
    return (rbidx - 1) * 2 - 1
 end
 @inline function nidx( rbidx::Int, ::Val{false}, ::Val{false})::Int
-   return (rbidx - 1) * 2 
+   return (rbidx - 1) * 2
+end
+@inline function nidx( rbidx::Int, ::Val{false}, b::Bool)::Int
+    return ifelse(b, (rbidx - 1) * 2 - 1, (rbidx - 1) * 2)
 end
 
 """
@@ -42,10 +49,10 @@ needs docu...
     return rbidx + 1
 end
 @inline function get_rbidx_right_neighbour(rbidx::Int, ::Val{true}, ::Val{false})::Int
-    return rbidx 
+    return rbidx
 end
 @inline function get_rbidx_right_neighbour(rbidx::Int, ::Val{false}, ::Val{true})::Int
-    return rbidx 
+    return rbidx
 end
 @inline function get_rbidx_right_neighbour(rbidx::Int, ::Val{false}, ::Val{false})::Int
     return rbidx + 1
@@ -55,7 +62,7 @@ end
 """
     RBExtBy2Array( et::Type, g::Grid{T, N, :cylindrical} )::Array{et, N + 1} where {T, N}
 
-Returns a RedBlack array for the grid `g`. 
+Returns a RedBlack array for the grid `g`.
 """
 function RBArray( et::Type, g::Grid{T, N, :cylindrical} )::Array{et, N + 1} where {T, N}
     nr, nφ, nz = size(g)
@@ -65,7 +72,7 @@ end
 function RBArray( a::Array{T, N}, grid::Grid{TG, N, :cylindrical} )::Array{T, N + 1} where {T, N, TG}
     rbarray::Array{T, N + 1} = RBArray(T, grid)
     for iz in axes(a, 3)
-        irbz::Int = div(iz, 2) + mod(iz, 2) 
+        irbz::Int = div(iz, 2) + mod(iz, 2)
         for iφ in axes(a, 2)
             idxsum::Int = iz + iφ
             for ir in axes(a, 1)
@@ -90,7 +97,7 @@ end
 function RBExtBy2Array( a::Array{T, N}, grid::Grid{TG, N, :cylindrical} )::Array{T, N + 1} where {T, N, TG}
     rbarray::Array{T, N + 1} = RBExtBy2Array(T, grid)
     for iz in axes(a, 3)
-        irbz::Int = rbidx(iz) 
+        irbz::Int = rbidx(iz)
         for iφ in axes(a, 2)
             irbφ::Int = iφ + 1
             idxsum::Int = iz + iφ
@@ -122,7 +129,7 @@ function RBExtBy2Array( a::Array{T, 3}, grid::Grid{TG, 3, :cartesian} )::Array{T
             irby::Int = iy + 1
             idxsum::Int = iz + iy
             for ix in axes(a, 1)
-                irbx::Int = rbidx(ix) 
+                irbx::Int = rbidx(ix)
                 rbi::Int = iseven(idxsum + ix) ? rb_even::Int : rb_odd::Int
                 rbarray[ irbx, irby, irbz, rbi ] = a[ix, iy, iz]
             end
@@ -130,5 +137,3 @@ function RBExtBy2Array( a::Array{T, 3}, grid::Grid{TG, 3, :cartesian} )::Array{T
     end
     return rbarray
 end
-
-

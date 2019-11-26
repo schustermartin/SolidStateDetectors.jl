@@ -13,4 +13,7 @@ include("WeightingPotential.jl")
 
 include("SimulationAlgorithms/Cylindrical.jl")
 include("SimulationAlgorithms/Cartesian3D.jl")
+
+include("SimulationAlgorithms/Cylindrical_gpu.jl")
+
 include("ConvergenceAndRefinement.jl")

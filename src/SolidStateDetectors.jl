@@ -8,6 +8,10 @@ using LinearAlgebra
 using Random
 using Statistics
 
+using CUDAdrv
+using CuArrays
+using CUDAnative
+
 using ArraysOfArrays
 using FillArrays
 using Formatting
